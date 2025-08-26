@@ -232,7 +232,7 @@ object LexerTests extends TestSuite {
       val scanner = new TsLexer.Scanner(input)
 
       val token1 = scanner.first
-      assert(token1.isInstanceOf[TsLexer.Ident])
+      assert(token1.isInstanceOf[TsLexer.Identifier])
       assert(token1.chars == "obj")
 
       val scanner2 = scanner.rest
