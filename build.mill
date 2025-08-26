@@ -11,9 +11,12 @@ object Versions {
     val laminar = "17.2.1"
 }
 
-object www extends ScalaJSModule {
+trait SJSModule extends ScalaJSModule {
   def scalaVersion = Versions.scala3
   def scalaJSVersion = Versions.sjs
+}
+
+object www extends SJSModule {
   def moduleKind = ModuleKind.ESModule
   def moduleSplitStyle = ModuleSplitStyle.FewestModules
   
@@ -23,7 +26,7 @@ object www extends ScalaJSModule {
   )
 
   object test extends ScalaJSTests with TestModule.Utest {
-    def utestVersion = "0.8.5"
+    def utestVersion = "0.9.0"
     def moduleKind = ModuleKind.NoModule
   }
 
