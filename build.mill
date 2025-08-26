@@ -35,6 +35,15 @@ trait SJSModule extends ScalaJSModule {
     mvn"io.circe::circe-generic::${Versions.circe}",
     mvn"io.circe::circe-parser::${Versions.circe}"
   )
+
+  object test extends ScalaJSTests with TestModule.Utest {
+    def utestVersion = Versions.utest
+    def moduleKind = ModuleKind.NoModule
+  }
+
+  def jsEnvConfig = Task {
+    JsEnvConfig.JsDom()
+  }
 }
 
 object www extends SJSModule {
@@ -47,15 +56,6 @@ object www extends SJSModule {
   )
 
   def moduleDeps = Seq(ts)
-
-  object test extends ScalaJSTests with TestModule.Utest {
-    def utestVersion = Versions.utest
-    def moduleKind = ModuleKind.NoModule
-  }
-
-  def jsEnvConfig = Task {
-    JsEnvConfig.JsDom()
-  }
 }
 
 object core extends SJSModule
