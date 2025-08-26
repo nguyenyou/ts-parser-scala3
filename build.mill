@@ -5,32 +5,71 @@ package build
 import mill.*, scalalib.*, scalajslib.*, scalajslib.api.*
 
 object Versions {
-    val scala3 = "3.7.0"
+    val scala3 = "3.7.2"
     val sjs = "1.19.0"
     val sjsdom = "2.8.0"
     val laminar = "17.2.1"
+    val circe = "0.14.14"
+    val sourcecode = "0.4.3-M5"
+    val fansi = "0.4.0"
+    val utest = "0.9.0"
+    val scalaParserCombinators = "2.4.0"
 }
 
 trait SJSModule extends ScalaJSModule {
   def scalaVersion = Versions.scala3
   def scalaJSVersion = Versions.sjs
+
+  def scalacOptions = Seq(
+    "-rewrite",
+    "-source", "3.7-migration",
+    "-feature",
+    "-deprecation",
+    "-language:implicitConversions"
+  )
+
+  def mvnDeps = Seq(
+    mvn"com.lihaoyi::sourcecode::${Versions.sourcecode}",
+    // Latest Circe version with Scala.js support
+    mvn"io.circe::circe-core::${Versions.circe}",
+    mvn"io.circe::circe-generic::${Versions.circe}",
+    mvn"io.circe::circe-parser::${Versions.circe}"
+  )
 }
 
 object www extends SJSModule {
   def moduleKind = ModuleKind.ESModule
   def moduleSplitStyle = ModuleSplitStyle.FewestModules
   
-  def mvnDeps = Seq(
+  def mvnDeps = super.mvnDeps() ++ Seq(
     mvn"com.raquo::laminar::${Versions.laminar}",
     mvn"org.scala-js::scalajs-dom::${Versions.sjsdom}"
   )
 
+  def moduleDeps = Seq(ts)
+
   object test extends ScalaJSTests with TestModule.Utest {
-    def utestVersion = "0.9.0"
+    def utestVersion = Versions.utest
     def moduleKind = ModuleKind.NoModule
   }
 
   def jsEnvConfig = Task {
     JsEnvConfig.JsDom()
   }
+}
+
+object core extends SJSModule
+
+object logging extends SJSModule {
+  override def mvnDeps = super.mvnDeps() ++ Seq(
+    mvn"com.lihaoyi::fansi:${Versions.fansi}"
+  )
+}
+
+object ts extends SJSModule {
+  def moduleDeps = Seq(core, logging)
+
+  def mvnDeps = Seq(
+    mvn"org.scala-lang.modules::scala-parser-combinators::${Versions.scalaParserCombinators}",
+  )
 }
