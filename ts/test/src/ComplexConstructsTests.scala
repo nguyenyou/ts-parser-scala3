@@ -370,5 +370,108 @@ object ComplexConstructsTests extends TestSuite {
           throw new Exception(s"Parse failed: $error")
       }
     }
+
+    test("parseString - infer keyword in conditional types") {
+      val input = "type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;"
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val typeAlias = parsedFile.members.head.asInstanceOf[TsDeclTypeAlias]
+          assert(typeAlias.name.value == "ReturnType")
+          assert(typeAlias.tparams.length == 1)
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
+
+    test("parseString - unique symbol type") {
+      val input = "declare const mySymbol: unique symbol;"
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val varDecl = parsedFile.members.head.asInstanceOf[TsDeclVar]
+          assert(varDecl.name.value == "mySymbol")
+          assert(varDecl.readOnly)
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
+
+    test("parseString - readonly modifier on types") {
+      val input = "type ReadonlyArray<T> = readonly T[];"
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val typeAlias = parsedFile.members.head.asInstanceOf[TsDeclTypeAlias]
+          assert(typeAlias.name.value == "ReadonlyArray")
+          assert(typeAlias.tparams.length == 1)
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
+
+    test("parseString - this type") {
+      val input = """interface Builder {
+        |  setValue(value: string): this;
+        |}""".stripMargin
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val interface = parsedFile.members.head.asInstanceOf[TsDeclInterface]
+          assert(interface.name.value == "Builder")
+          assert(interface.members.length == 1)
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
+
+    test("parseString - never type") {
+      val input = "type Impossible = never;"
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val typeAlias = parsedFile.members.head.asInstanceOf[TsDeclTypeAlias]
+          assert(typeAlias.name.value == "Impossible")
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
+
+    test("parseString - rest parameters") {
+      val input = "declare function combine(first: string, ...rest: string[]): string;"
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val funcDecl = parsedFile.members.head.asInstanceOf[TsDeclFunction]
+          assert(funcDecl.name.value == "combine")
+          assert(funcDecl.signature.params.length == 2)
+        case Left(error) =>
+          throw new Exception(s"Parse failed: $error")
+      }
+    }
   }
 }

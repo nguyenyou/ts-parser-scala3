@@ -226,5 +226,19 @@ object LexerTests extends TestSuite {
       // At minimum, should not crash
       assert(token != null)
     }
+
+    test("TsLexer - optional chaining operator") {
+      val input   = "obj?.prop"
+      val scanner = new TsLexer.Scanner(input)
+
+      val token1 = scanner.first
+      assert(token1.isInstanceOf[TsLexer.Ident])
+      assert(token1.chars == "obj")
+
+      val scanner2 = scanner.rest
+      val token2   = scanner2.first
+      // Should recognize ?. as a token or separate tokens
+      assert(token2 != null)
+    }
   }
 }
