@@ -1,4 +1,4 @@
-package com.olvind.logging
+package io.github.nguyenyou.logging
 
 import scala.collection.mutable
 

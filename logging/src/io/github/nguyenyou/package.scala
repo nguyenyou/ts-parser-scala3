@@ -1,6 +1,6 @@
-package com.olvind
+package io.github.nguyenyou
 
-import com.olvind.logging.Logger.{AppendableLogger, Stored, StoringLogger, WriterLogger}
+import io.github.nguyenyou.logging.Logger.{AppendableLogger, Stored, StoringLogger, WriterLogger}
 import fansi.Str
 
 package object logging {
@@ -13,15 +13,15 @@ package object logging {
 
   def appendable[A <: JsAppendable](
       appendable: A,
-      pattern:    Pattern = Pattern.default,
-      ctx:        Ctx = emptyContext,
+      pattern: Pattern = Pattern.default,
+      ctx: Ctx = emptyContext
   ): Logger[A] =
     new AppendableLogger(appendable, pattern, ctx)
 
   def writer[W <: JsWriter](
-      writer:  W,
+      writer: W,
       pattern: Pattern = Pattern.default,
-      ctx:     Ctx     = emptyContext,
+      ctx: Ctx = emptyContext
   ): Logger[W] =
     new WriterLogger(new AppendableLogger(writer, pattern, ctx))
 

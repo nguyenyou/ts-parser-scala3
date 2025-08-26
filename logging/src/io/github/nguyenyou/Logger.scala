@@ -1,4 +1,4 @@
-package com.olvind.logging
+package io.github.nguyenyou.logging
 
 import fansi.Str
 import sourcecode.{Enclosing, File, Line, Text}
@@ -38,8 +38,11 @@ object Logger {
       store.normal
   }
 
-  private[logging] final class AppendableLogger[A <: JsAppendable](val underlying: A, pattern: Pattern, val context: Ctx)
-      extends Logger[A] {
+  private[logging] final class AppendableLogger[A <: JsAppendable](
+      val underlying: A,
+      pattern: Pattern,
+      val context: Ctx
+  ) extends Logger[A] {
 
     override def log[T: Formatter](t: => Text[T], throwable: Option[Throwable], metadata: Metadata): Unit = {
       val formatted = pattern(t, throwable, metadata, context)
@@ -110,9 +113,9 @@ object Logger {
   }
 
   object DevNull extends Logger[Unit] {
-    override def underlying: Unit = ()
-    override def withContext[T: Formatter](key:  String, value: T): Logger[Unit] = this
-    override def log[T:         Formatter](text: => Text[T], throwable: Option[Throwable], metadata: Metadata): Unit = ()
+    override def underlying: Unit                                                                            = ()
+    override def withContext[T: Formatter](key: String, value: T): Logger[Unit]                              = this
+    override def log[T: Formatter](text: => Text[T], throwable: Option[Throwable], metadata: Metadata): Unit = ()
   }
 
   implicit final class LoggerOps[U](private val self: Logger[U]) extends AnyVal {
@@ -133,11 +136,11 @@ object Logger {
 
   implicit final class LoggingOps[U](private val self: Logger[U]) extends AnyVal {
     @inline def apply[T: Formatter](
-        logLevel:  LogLevel,
-        t:         => Text[T],
+        logLevel: LogLevel,
+        t: => Text[T],
         throwable: Option[Throwable] = None,
-        instant:   JsInstant = JsInstant.now,
-    )(implicit l:  Line, f: File, e: Enclosing): Unit =
+        instant: JsInstant = JsInstant.now
+    )(implicit l: Line, f: File, e: Enclosing): Unit =
       self.log(t, throwable, new Metadata(instant, logLevel, l, f, e))
 
     @inline def trace[T: Formatter](t: => Text[T])(implicit l: Line, f: File, e: Enclosing): Unit =

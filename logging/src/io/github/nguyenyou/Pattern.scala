@@ -1,4 +1,4 @@
-package com.olvind.logging
+package io.github.nguyenyou.logging
 
 import fansi.{Color, EscapeAttr, Str}
 import sourcecode.Text
@@ -57,8 +57,8 @@ object Pattern {
           throwable match {
             case None     => ""
             case Some(th) => Subtle(formatThrowable(th))
-          },
-        ),
+          }
+        )
       )
     }
   }
