@@ -94,7 +94,7 @@ object ParserTests extends TestSuite {
         |    url: string;
         |    timeout?: number;
         |  }
-        |  
+        |
         |  function create(config: Config): void;
         |}""".stripMargin
 
@@ -111,6 +111,103 @@ object ParserTests extends TestSuite {
             case _                  => false
           }
           assert(hasNamespace)
+          parsedFile
+        case Left(error) =>
+          throw new Exception(s"Expected successful parse but got error: $error")
+      }
+    }
+
+    // Additional comprehensive parser tests
+    test("parseString - type alias") {
+      val input  = "type StringOrNumber = string | number;"
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val typeAlias = parsedFile.members.head.asInstanceOf[TsDeclTypeAlias]
+          assert(typeAlias.name.value == "StringOrNumber")
+          parsedFile
+        case Left(error) =>
+          throw new Exception(s"Expected successful parse but got error: $error")
+      }
+    }
+
+    test("parseString - enum declaration") {
+      val input = """enum Color {
+        |  Red = "red",
+        |  Green = "green",
+        |  Blue = "blue"
+        |}""".stripMargin
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val enumDecl = parsedFile.members.head.asInstanceOf[TsDeclEnum]
+          assert(enumDecl.name.value == "Color")
+          assert(enumDecl.members.length == 3)
+          parsedFile
+        case Left(error) =>
+          throw new Exception(s"Expected successful parse but got error: $error")
+      }
+    }
+
+    test("parseString - class declaration") {
+      val input = """class Animal {
+        |  name: string;
+        |  constructor(name: string);
+        |  speak(): void;
+        |}""".stripMargin
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val classDecl = parsedFile.members.head.asInstanceOf[TsDeclClass]
+          assert(classDecl.name.value == "Animal")
+          assert(classDecl.members.length == 3)
+          parsedFile
+        case Left(error) =>
+          throw new Exception(s"Expected successful parse but got error: $error")
+      }
+    }
+
+    test("parseString - variable declaration") {
+      val input  = "declare const API_URL: string;"
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val varDecl = parsedFile.members.head.asInstanceOf[TsDeclVar]
+          assert(varDecl.name.value == "API_URL")
+          assert(varDecl.readOnly)
+          parsedFile
+        case Left(error) =>
+          throw new Exception(s"Expected successful parse but got error: $error")
+      }
+    }
+
+    test("parseString - module declaration") {
+      val input = """declare module "my-module" {
+        |  export function helper(): void;
+        |}""".stripMargin
+
+      val result = parseString(input)
+      assert(result.isRight)
+
+      result match {
+        case Right(parsedFile) =>
+          assert(parsedFile.members.length == 1)
+          val moduleDecl = parsedFile.members.head.asInstanceOf[TsDeclModule]
+          assert(moduleDecl.name.value == "my-module")
           parsedFile
         case Left(error) =>
           throw new Exception(s"Expected successful parse but got error: $error")
