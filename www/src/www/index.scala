@@ -9,4 +9,8 @@ object Main {
     render(dom.document.getElementById("app"), App()())
   }
 
+  def hello(): String = {
+    "Hello World"
+  }
+
 }
