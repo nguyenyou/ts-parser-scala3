@@ -1,9 +1,8 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package transforms
 
-/**
-  * Extract statics into a namespace.
+/** Extract statics into a namespace.
   *
   * Freely create duplicate namespaces, since they will be combined right after
   */
@@ -12,7 +11,7 @@ object MoveStatics extends TransformMembers {
     x.members.flatMap {
       case int: TsDeclInterface =>
         val comment = Comment(
-          s"/* Note: this doesnt actually exist! a class implementing ${int.name.value} should have this defined on it's companion object */\n",
+          s"/* Note: this doesnt actually exist! a class implementing ${int.name.value} should have this defined on it's companion object */\n"
         )
 
         val (statics, nonStatics) = extractStatics(int.members, comment)

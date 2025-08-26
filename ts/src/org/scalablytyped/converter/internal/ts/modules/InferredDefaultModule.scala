@@ -1,8 +1,8 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts.modules
 
 import io.github.nguyenyou.logging.Logger
-import org.scalablytyped.converter.internal.ts._
+import io.github.nguyenyou.internal.ts._
 
 object InferredDefaultModule {
   def onlyAugments(in: TsParsedFile): Boolean =

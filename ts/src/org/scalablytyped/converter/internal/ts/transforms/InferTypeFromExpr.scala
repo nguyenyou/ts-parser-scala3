@@ -1,4 +1,4 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package transforms
 
@@ -19,6 +19,6 @@ object InferTypeFromExpr extends TreeTransformationScopedChanges {
   private def toType(expr: TsExpr) =
     TsExpr.widen(TsExpr.typeOf(expr)) match {
       case tr: TsTypeRef => tr.copy(comments = tr.comments + Comment(s"/* ${TsExpr.format(expr)} */ "))
-      case other => other
+      case other         => other
     }
 }

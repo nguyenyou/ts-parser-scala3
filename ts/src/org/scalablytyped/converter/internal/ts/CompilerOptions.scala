@@ -1,23 +1,23 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, Encoder, Json}
-import org.scalablytyped.converter.internal.maps._
+import io.github.nguyenyou.internal.maps._
 
 import scala.collection.immutable.SortedMap
 
 case class CompilerOptions(
-    module:                           Option[String],
-    lib:                              Option[IArray[String]],
-    noImplicitAny:                    Option[Boolean],
-    noImplicitThis:                   Option[Boolean],
-    strictNullChecks:                 Option[Boolean],
-    baseUrl:                          Option[String],
-    typeRoots:                        Option[IArray[String]],
-    types:                            Option[IArray[String]],
-    noEmit:                           Option[Boolean],
-    forceConsistentCasingInFileNames: Option[Boolean],
+    module: Option[String],
+    lib: Option[IArray[String]],
+    noImplicitAny: Option[Boolean],
+    noImplicitThis: Option[Boolean],
+    strictNullChecks: Option[Boolean],
+    baseUrl: Option[String],
+    typeRoots: Option[IArray[String]],
+    types: Option[IArray[String]],
+    noEmit: Option[Boolean],
+    forceConsistentCasingInFileNames: Option[Boolean]
 )
 
 object CompilerOptions {
@@ -27,7 +27,7 @@ object CompilerOptions {
 
 case class TsConfig(
     compilerOptions: Option[CompilerOptions],
-    files:           Option[IArray[String]],
+    files: Option[IArray[String]]
 )
 
 object TsConfig {
@@ -36,19 +36,21 @@ object TsConfig {
 }
 
 case class PackageJson(
-    version:          Option[String],
-    dependencies:     Option[Map[TsIdentLibrary, String]],
-    devDependencies:  Option[Map[TsIdentLibrary, String]],
+    version: Option[String],
+    dependencies: Option[Map[TsIdentLibrary, String]],
+    devDependencies: Option[Map[TsIdentLibrary, String]],
     peerDependencies: Option[Map[TsIdentLibrary, String]],
-    typings:          Option[Json],
-    module:           Option[Json],
-    types:            Option[Json],
-    files:            Option[IArray[String]],
-    dist:             Option[PackageJson.Dist],
-    exports:          Option[Json],
+    typings: Option[Json],
+    module: Option[Json],
+    types: Option[Json],
+    files: Option[IArray[String]],
+    dist: Option[PackageJson.Dist],
+    exports: Option[Json]
 ) {
   def allLibs(dev: Boolean, peer: Boolean): SortedMap[TsIdentLibrary, String] =
-    smash(IArray.fromOptions(dependencies, devDependencies.filter(_ => dev), peerDependencies.filter(_ => peer))).toSorted
+    smash(
+      IArray.fromOptions(dependencies, devDependencies.filter(_ => dev), peerDependencies.filter(_ => peer))
+    ).toSorted
 
   def parsedTypes: Option[IArray[String]] =
     types
@@ -59,7 +61,7 @@ case class PackageJson(
           _ => sys.error(s"unexpected number in types structure: $types"),
           IArray(_),
           arr => IArray.fromTraversable(arr).mapNotNone(_.asString),
-          _   => sys.error(s"unexpected object in types structure: $types"),
+          _ => sys.error(s"unexpected object in types structure: $types")
         )
       }
       .filter(_.nonEmpty)
@@ -73,7 +75,7 @@ case class PackageJson(
           _ => sys.error(s"unexpected number in typings structure: $typings"),
           IArray(_),
           arr => IArray.fromTraversable(arr).mapNotNone(_.asString),
-          _   => sys.error(s"unexpected object in typings structure: $typings"),
+          _ => sys.error(s"unexpected object in typings structure: $typings")
         )
       }
       .filter(_.nonEmpty)
@@ -82,11 +84,11 @@ case class PackageJson(
     def look(json: Json): Map[String, String] =
       json.fold[Map[String, String]](
         Map.empty,
-        _   => Map.empty,
-        _   => Map.empty,
+        _ => Map.empty,
+        _ => Map.empty,
         str => Map("" -> str),
-        _   => Map.empty,
-        obj => obj.toMap.flatMap { case (name, value) => value.asString.map(str => (name, str)) },
+        _ => Map.empty,
+        obj => obj.toMap.flatMap { case (name, value) => value.asString.map(str => (name, str)) }
       )
 
     module.map(look).filter(_.nonEmpty)
@@ -98,19 +100,18 @@ case class PackageJson(
     def look(json: Json): Map[String, String] =
       json.fold[Map[String, String]](
         Map.empty,
-        _      => Map.empty,
-        _      => Map.empty,
-        _      => Map.empty,
+        _ => Map.empty,
+        _ => Map.empty,
+        _ => Map.empty,
         values => maps.smash(IArray.fromTraversable(values.map(look))),
         obj =>
-          obj.toMap.flatMap {
-            case (name, value) =>
-              val maybe = for {
-                obj <- value.asObject
-                types <- obj.toMap.get("types")
-                typesString <- types.asString
-              } yield typesString
-              maybe.map(tpe => (name, tpe))
+          obj.toMap.flatMap { case (name, value) =>
+            val maybe = for {
+              obj         <- value.asObject
+              types       <- obj.toMap.get("types")
+              typesString <- types.asString
+            } yield typesString
+            maybe.map(tpe => (name, tpe))
           },
       )
 
@@ -122,7 +123,7 @@ object PackageJson {
   case class Dist(tarball: String)
 
   object Dist {
-    implicit val encodes:     Encoder[Dist] = deriveEncoder
+    implicit val encodes: Encoder[Dist]     = deriveEncoder
     implicit val decodesDist: Decoder[Dist] = deriveDecoder
   }
 
@@ -140,10 +141,10 @@ object NotNeededPackage {
 }
 
 case class TypingsJson(
-    name:   String,
-    main:   String,
-    files:  IArray[String],
-    global: Boolean,
+    name: String,
+    main: String,
+    files: IArray[String],
+    global: Boolean
 )
 
 object TypingsJson {

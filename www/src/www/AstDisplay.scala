@@ -2,7 +2,7 @@ package www
 
 import org.scalajs.dom
 import com.raquo.laminar.api.L.*
-import org.scalablytyped.converter.internal.ts.TsParsedFile
+import io.github.nguyenyou.internal.ts.TsParsedFile
 import www.components.LaminarComponent
 
 case class AstDisplay(props: AstDisplay.Props) extends LaminarComponent {
@@ -110,7 +110,7 @@ case class AstDisplay(props: AstDisplay.Props) extends LaminarComponent {
       depth: Int
   ): HtmlElement = {
     val isExpandedVar = Var(depth < 2) // Auto-expand first 2 levels
-    val hasChildren = node.children.nonEmpty
+    val hasChildren   = node.children.nonEmpty
 
     div(
       cls("select-text"),
@@ -182,7 +182,7 @@ case class AstDisplay(props: AstDisplay.Props) extends LaminarComponent {
   }
 
   private def renderTextView(parsedFile: TsParsedFile): HtmlElement = {
-    val treeNode = AstFormatter.formatAsTree(parsedFile)
+    val treeNode    = AstFormatter.formatAsTree(parsedFile)
     val textContent = AstFormatter.renderTreeAsText(treeNode)
 
     pre(
@@ -202,7 +202,7 @@ case class AstDisplay(props: AstDisplay.Props) extends LaminarComponent {
       node: AstFormatter.TreeNode,
       indent: Int
   ): String = {
-    val prefix = "  " * indent
+    val prefix     = "  " * indent
     val nextPrefix = "  " * (indent + 1)
 
     val fields = List(

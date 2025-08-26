@@ -1,4 +1,4 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 
 package object parser {
@@ -23,6 +23,6 @@ package object parser {
     }
   }
 
-  def parseString(content: String): Either[String, TsParsedFile] = 
+  def parseString(content: String): Either[String, TsParsedFile] =
     parseFileContent("<string>", content)
 }

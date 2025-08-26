@@ -1,13 +1,13 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts.transforms
 
-import org.scalablytyped.converter.internal.ts._
+import io.github.nguyenyou.internal.ts._
 
 object DropProperties extends TransformClassMembers with TransformMembers {
   override def newMembers(scope: TsTreeScope, x: TsContainer): IArray[TsContainerOrDecl] =
     x.members.filter {
       case x: TsNamedValueDecl => x.name.value =/= "__promisify__"
-      case _ => true
+      case _                   => true
     }
 
   override def newClassMembers(scope: TsTreeScope, x: HasClassMembers): IArray[TsMember] =

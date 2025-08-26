@@ -1,4 +1,4 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts.parser
 
 import scala.util.parsing.combinator.Parsers

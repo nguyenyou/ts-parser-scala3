@@ -1,11 +1,9 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package transforms
 import scala.collection.mutable
 
-/**
-  * Typescript supports defaulted type arguments.
-  * This adds them back.
+/** Typescript supports defaulted type arguments. This adds them back.
   *
   * ```typescript
   * interface Component<P = {}, S = {}> extends ComponentLifecycle<P, S> { }

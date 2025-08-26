@@ -1,4 +1,4 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package modules
 
@@ -8,11 +8,11 @@ sealed trait ExpandedMod {
 
 object ExpandedMod {
   final case class Whole(
-                          defaults:   IArray[TsNamedDecl],
-                          namespaced: IArray[TsNamedDecl],
-                          rest:       IArray[TsNamedDecl],
-                          scope:      TsTreeScope,
-                        ) extends ExpandedMod {
+      defaults: IArray[TsNamedDecl],
+      namespaced: IArray[TsNamedDecl],
+      rest: IArray[TsNamedDecl],
+      scope: TsTreeScope
+  ) extends ExpandedMod {
     override def nonEmpty: Boolean = defaults.nonEmpty || namespaced.nonEmpty || rest.nonEmpty
   }
 

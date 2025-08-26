@@ -1,11 +1,11 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 
 import io.github.nguyenyou.logging.{Formatter, Logger}
-import org.scalablytyped.converter.internal.maps._
-import org.scalablytyped.converter.internal.ts.TsTreeScope.LoopDetector
-import org.scalablytyped.converter.internal.ts.modules.{ExpandedMod, Exports, Imports}
-import org.scalablytyped.converter.internal.ts.transforms.ExpandTypeMappings
+import io.github.nguyenyou.internal.maps._
+import io.github.nguyenyou.internal.ts.TsTreeScope.LoopDetector
+import io.github.nguyenyou.internal.ts.modules.{ExpandedMod, Exports, Imports}
+import io.github.nguyenyou.internal.ts.transforms.ExpandTypeMappings
 import sourcecode.{Enclosing, File, Line, Text}
 
 import scala.collection.mutable

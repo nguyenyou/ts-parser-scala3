@@ -1,10 +1,10 @@
 package www
 
 import com.raquo.laminar.api.L.*
-import org.scalablytyped.converter.internal.IArray
-import org.scalablytyped.converter.internal.Json
-import org.scalablytyped.converter.internal.scalajs.Tree
-import org.scalablytyped.converter.internal.ts.parser
+import io.github.nguyenyou.internal.IArray
+import io.github.nguyenyou.internal.Json
+import io.github.nguyenyou.internal.scalajs.Tree
+import io.github.nguyenyou.internal.ts.parser
 import org.scalajs.dom
 import org.scalajs.dom.fetch
 import www.components.LaminarComponent
@@ -18,9 +18,9 @@ import js.Thenable.Implicits.*
 case class App() extends LaminarComponent {
 
   // State management
-  val codeVar = Var(CodeInput.Examples.simple)
-  val parseResultVar = Var[Either[String, org.scalablytyped.converter.internal.ts.TsParsedFile]](Right(null))
-  val isParsingVar = Var(false)
+  val codeVar           = Var(CodeInput.Examples.simple)
+  val parseResultVar    = Var[Either[String, io.github.nguyenyou.internal.ts.TsParsedFile]](Right(null))
+  val isParsingVar      = Var(false)
   val jsonTestResultVar = Var[Option[String]](None)
 
   // Parse function
@@ -33,17 +33,20 @@ case class App() extends LaminarComponent {
     isParsingVar.set(true)
 
     // Use a small delay to show parsing state
-    dom.window.setTimeout(() => {
-      try {
-        val result = parser.parseString(code)
-        parseResultVar.set(result)
-      } catch {
-        case ex: Throwable =>
-          parseResultVar.set(Left(s"Exception during parsing: ${ex.getClass.getSimpleName}: ${ex.getMessage}"))
-      } finally {
-        isParsingVar.set(false)
-      }
-    }, 100)
+    dom.window.setTimeout(
+      () => {
+        try {
+          val result = parser.parseString(code)
+          parseResultVar.set(result)
+        } catch {
+          case ex: Throwable =>
+            parseResultVar.set(Left(s"Exception during parsing: ${ex.getClass.getSimpleName}: ${ex.getMessage}"))
+        } finally {
+          isParsingVar.set(false)
+        }
+      },
+      100
+    )
   }
 
   // Initialize with default example
@@ -60,7 +63,10 @@ case class App() extends LaminarComponent {
           cls("flex items-center justify-between"),
           div(
             h1(cls("text-2xl font-bold text-gray-900"), "TypeScript AST Parser"),
-            p(cls("text-gray-600 text-sm mt-1"), "Parse TypeScript declaration files and explore their Abstract Syntax Tree")
+            p(
+              cls("text-gray-600 text-sm mt-1"),
+              "Parse TypeScript declaration files and explore their Abstract Syntax Tree"
+            )
           ),
           div(
             cls("flex items-center gap-4"),
@@ -109,14 +115,16 @@ case class App() extends LaminarComponent {
           // Code input
           div(
             cls("flex-1 p-6 overflow-hidden"),
-            CodeInput(CodeInput.Props(
-              value = codeVar.now(),
-              onChange = { newCode =>
-                codeVar.set(newCode)
-                parseCode(newCode)
-              },
-              disabled = false
-            ))()
+            CodeInput(
+              CodeInput.Props(
+                value = codeVar.now(),
+                onChange = { newCode =>
+                  codeVar.set(newCode)
+                  parseCode(newCode)
+                },
+                disabled = false
+              )
+            )()
           )
         ),
 
@@ -128,10 +136,12 @@ case class App() extends LaminarComponent {
           div(
             cls("px-6 py-4"),
             child <-- parseResultVar.signal.map { result =>
-              ErrorDisplay(ErrorDisplay.Props(
-                error = ErrorDisplay.fromParseResult(result, codeVar.now()),
-                sourceCode = codeVar.now()
-              ))()
+              ErrorDisplay(
+                ErrorDisplay.Props(
+                  error = ErrorDisplay.fromParseResult(result, codeVar.now()),
+                  sourceCode = codeVar.now()
+                )
+              )()
             }
           ),
 
@@ -141,10 +151,12 @@ case class App() extends LaminarComponent {
             child <-- parseResultVar.signal.map { result =>
               result match {
                 case Right(parsedFile) if parsedFile != null =>
-                  AstDisplay(AstDisplay.Props(
-                    parsedFile = Some(parsedFile),
-                    viewMode = ViewMode.Tree
-                  ))()
+                  AstDisplay(
+                    AstDisplay.Props(
+                      parsedFile = Some(parsedFile),
+                      viewMode = ViewMode.Tree
+                    )
+                  )()
                 case Right(_) =>
                   div(
                     cls("flex items-center justify-center h-full text-gray-500"),

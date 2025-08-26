@@ -1,9 +1,9 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package modules
 
 import io.github.nguyenyou.logging.Logger
-import org.scalablytyped.converter.internal.sets.{EmptySet, NonEmptySet}
+import io.github.nguyenyou.internal.sets.{EmptySet, NonEmptySet}
 
 /** There is a tendency to use node things (at least, so far) without declaring it. This infers such use
   */

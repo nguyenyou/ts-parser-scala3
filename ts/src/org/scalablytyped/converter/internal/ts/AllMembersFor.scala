@@ -1,7 +1,7 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 
-import org.scalablytyped.converter.internal.ts.TsTreeScope.LoopDetector
+import io.github.nguyenyou.internal.ts.TsTreeScope.LoopDetector
 
 object AllMembersFor {
   def forType(scope: TsTreeScope, loopDetector: LoopDetector)(tpe: TsType): IArray[TsMember] =
@@ -45,7 +45,7 @@ object AllMembersFor {
               case TsDeclClass(_, _, _, _, _, parent, implements, members, _, _) =>
                 handleOverridingFields(
                   members,
-                  (implements ++ IArray.fromOption(parent)).flatMap(apply(newScope, newLoopDetector)),
+                  (implements ++ IArray.fromOption(parent)).flatMap(apply(newScope, newLoopDetector))
                 )
             }
 
@@ -58,9 +58,9 @@ object AllMembersFor {
 
   def forInterface(
       loopDetector: TsTreeScope.LoopDetector,
-      x:            TsDeclInterface,
-      newScope:     TsTreeScope,
-      tparams:      IArray[TsType],
+      x: TsDeclInterface,
+      newScope: TsTreeScope,
+      tparams: IArray[TsType]
   ): IArray[TsMember] =
     FillInTParams(x, tparams) match {
       case TsDeclInterface(_, _, _, _, inheritance, members, _) =>

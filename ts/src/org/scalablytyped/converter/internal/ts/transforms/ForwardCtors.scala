@@ -1,8 +1,8 @@
-package org.scalablytyped.converter.internal
+package io.github.nguyenyou.internal
 package ts
 package transforms
 
-import org.scalablytyped.converter.internal.ts.TsTreeScope.LoopDetector
+import io.github.nguyenyou.internal.ts.TsTreeScope.LoopDetector
 
 object ForwardCtors extends TreeTransformationScopedChanges {
   def parentWithCtor(scope: TsTreeScope, loopDetector: LoopDetector)(parentRef: TsTypeRef): Option[IArray[TsMember]] =
