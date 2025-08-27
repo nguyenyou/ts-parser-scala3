@@ -73,3 +73,7 @@ object ts extends SJSModule {
     mvn"org.scala-lang.modules::scala-parser-combinators::${Versions.scalaParserCombinators}",
   )
 }
+
+object scalajs extends SJSModule {
+  def moduleDeps = Seq(core, logging)
+}
