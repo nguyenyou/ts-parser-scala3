@@ -2,6 +2,8 @@ package io.github.nguyenyou.internal
 
 import scala.collection.immutable.{SortedMap, TreeMap}
 import scala.collection.mutable
+import scala.collection.BuildFrom
+import scala.collection.Factory
 
 object maps {
   object EmptyMap {
@@ -97,7 +99,20 @@ object maps {
       b.result()
     }
 
-    // Removed mapNotNone method that used CanBuildFrom (not available in Scala 3)
+    @inline def mapNotNone[VV](f: (K, V) => Option[VV])(using bf: BuildFrom[M[K, V], (K, VV), M[K, VV]]): M[K, VV] = {
+      val b  = bf.newBuilder(m)
+      val it = m.iterator
+      while (it.hasNext) {
+        it.next() match {
+          case (k, v) =>
+            f(k, v) match {
+              case Some(vv) => b += ((k, vv))
+              case None     => ()
+            }
+        }
+      }
+      b.result()
+    }
 
     @inline def toSorted(implicit O: Ordering[K]): SortedMap[K, V] =
       TreeMap() ++ m
